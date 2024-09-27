@@ -1,0 +1,44 @@
+﻿@using Bookstore.DTO
+@model IEnumerable<BookInStoreDTO>
+@{
+    ViewData["Title"] = ViewData["Store"] as string;
+    var store = TempData.Peek("Store") as string;
+}
+<h1>List of all books in @store</h1>
+<a class="btn btn-success" asp-action="BookOnTheWay">Books on the way</a>
+<a class="btn btn-success" asp-action="RequestBooks">Request books from warehouse</a>
+<hr />
+<table class="table table-sm table-bordered">
+    <tr>
+        <th>Name</th>
+        <th>Author</th>
+        <th>ISBN</th>
+        <th>Quantity</th>
+        <th>Section</th>
+        <th>Price</th>
+        <th>Sell</th>
+        <th colspan="3">Action</th>
+    </tr>
+    @foreach (var book in Model)
+    {
+        <tr>
+            <td>@book.Name</td>
+            <td>@book.Author</td>
+            <td>@book.ISBN</td>
+            <td>@book.Quantity</td>
+            <td>@book.BooksSection</td>
+            <td>@book.Price</td>
+            @if ((book.BooksSection == null) || (book.Price == 0))
+            {
+                <td>Add section and price</td>   
+            }
+            else
+            {
+                <td><form method="post"><button type="submit" class="btn btn-info" asp-action="Sell" asp-route-id="@book.Id">Sell</button></form></td>
+            }
+            <td><a class="btn btn-warning" asp-action="AddBookSectionAndPrice" asp-route-id="@book.Id">Add section and price</a></td>
+            <td><a class="btn btn-success" asp-action="SendBookToWarehouse" asp-route-id="@book.Id">Send to warehouse</a></td>
+            <td><form method="post"> <button type="submit" class="btn btn-danger" asp-action="Delete" asp-route-id="@book.Id">Delete</button></form></td>
+        </tr>
+    }
+</table>

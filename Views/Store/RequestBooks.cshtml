@@ -1,0 +1,36 @@
+﻿@using Bookstore.DTO
+@model IEnumerable<BookInWarehouseDTO>
+@{
+    ViewData["Title"] = ViewData["Store"] as string;
+    var store = TempData.Peek("Store") as string;
+}
+<h1>Request books from the warehouse</h1>
+<a asp-action="Index" class="btn btn-secondary">Back</a>
+<hr />
+<form method="post" asp-action="RequestBooks">
+    <table class="table table-sm table-bordered">
+        <tr>
+            <th>Name</th>
+            <th>ISBN</th>
+            <th>Quantity</th>
+            <th>Request Quantity</th>
+        </tr>
+        @for (int i = 0; i < Model.Count(); i++)
+        {
+            var book = Model.ElementAt(i);
+            <tr>
+                <td>@book.Name
+                    <input type="hidden" name="books[@i].Name" value="@book.Name" />
+                </td>
+                <td>@book.ISBN
+                    <input type="hidden" name="books[@i].ISBN" value="@book.ISBN" />
+                </td>
+                <td>@book.Quantity</td>
+                <td>
+                    <input type="number" min="0" max="@book.Quantity" value="0" name="books[@i].RequestedQuantity" class="form-control" />
+                </td>
+            </tr>
+        }
+    </table>
+    <button type="submit" class="btn btn-success" asp-route-storeName="@store">Submit</button>
+</form>

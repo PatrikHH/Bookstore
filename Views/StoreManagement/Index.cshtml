@@ -1,0 +1,46 @@
+﻿@using Bookstore.DTO
+@model IEnumerable<StoreManagementDTO>
+@{
+    ViewData["Title"] = "Store management";
+}
+@{
+    var allStores = ViewData["AllStores"] as List<StoreManagement>;
+
+    if (allStores == null)
+    {
+        <h1 class="no-something">There are no stores</h1>
+    }
+    else
+    {
+        <h1>List of all stores</h1>
+        <a class="btn btn-success" asp-action="Create">Create store</a>
+        <hr />
+        <table class="table table-sm table-bordered">
+            <tr>
+                <th>Name</th>
+                <th>Street</th>
+                <th>City</th>
+                <th>Email</th>
+                <th>Phone</th>
+            </tr>
+            @foreach (var store in Model)
+            {
+                <tr>
+                    <td>@store.Name</td>
+                    <td>@store.Street</td>
+                    <td>@store.City</td>
+                    <td>@store.Email</td>
+                    <td>@store.Phone</td>
+                    <td><a class="btn btn-warning" asp-action="Edit" asp-route-id="@store.Id">Edit</a></td>
+                    <td>
+                        <div class="form-group">
+                            <button class="btn btn-danger delete-store" data-id="@store.Id" data-url="@Url.Action("Delete", "StoreManagement")">
+                                Delete
+                            </button>
+                        </div> 
+                    </td>
+                </tr>       
+            }
+        </table>
+    }
+}

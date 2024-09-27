@@ -1,0 +1,102 @@
+﻿@using Bookstore.DTO
+@model IEnumerable<BookOnTheWayDTO>
+@{
+    ViewData["Title"] = "Books on the way";
+}
+@{
+    if (Model == null || !Model.Any())
+    {
+        <h1 class="no-something">There are no books on the way</h1>
+    }
+    else
+    {      
+        var allStores = ViewData["AllStores"] as List<StoreManagement>;
+        var groupedBooks = Model
+            .GroupBy(book => new { book.From, book.To, book.ContainerId })
+            .ToDictionary(group => group.Key, group => group.ToList());
+
+        var booksKeysWithMaxID = Model
+            .GroupBy(book => new { book.From, book.To })
+            .ToDictionary(group => group.Key, group => group.Max(book => book.ContainerId));
+
+        <h1 class="h1-head">List of all books on the way</h1>
+
+        foreach(var booksKey in booksKeysWithMaxID)
+        {
+            for (int i = 1; i <= booksKey.Value; i++)
+            {
+                var key = new { From = booksKey.Key.From, To = booksKey.Key.To, ContainerId = i };
+                if (groupedBooks.ContainsKey(key))
+                {
+                    var books = groupedBooks[key];
+                    <h4>
+                        Books from @booksKey.Key.From
+                        @if (!allStores.Any(x => x.Name == booksKey.Key.From || x.Name == booksKey.Key.To))
+                        {
+                            <span class="deleted-store">(deleted store)</span>
+                        }
+                        to @booksKey.Key.To
+                        (Container ID: @i)
+                    </h4>
+                    <a class="btn btn-success @(books.Any(book => book.IsSent) ? "disabled" : "")" asp-action="LockBooks" asp-route-ContainerId="@i" id="lockbooks">Send books on the road</a>
+                    <a class="btn btn-success @(books.Any(book => book.IsSent) ? "" : "disabled")" asp-action="@((booksKey.Key.To == "Warehouse") ? "AddBooksToWarehouse" : "AddBooksToStore")"
+                    asp-route-from="@booksKey.Key.From" asp-route-to="@booksKey.Key.To" asp-route-id="@i" id="addbooks">Add books to @((booksKey.Key.To == "Warehouse") ? "warehouse" : booksKey.Key.To)</a>
+
+                    <table class="table table-sm table-bordered">
+                        <tr>
+                            <th>Name</th>
+                            <th>Author</th>
+                            <th>ISBN</th>
+                            <th>Quantity</th>
+                            <th>From</th>
+                            <th>To</th>
+                            <th>Edit</th>
+                            <th>Delete</th>
+                        </tr>
+                        @{
+                            bool canEditDelete = allStores.Any(x => x.Name == booksKey.Key.From || x.Name == booksKey.Key.To);
+                            foreach (var book in books)
+                            {
+                                <tr>
+                                    <td>@book.Name</td>
+                                    <td>@book.Author</td>
+                                    <td>@book.ISBN</td>
+                                    <td>@book.Quantity</td>
+                                    <td>@book.From</td>
+                                    <td>@book.To</td>
+                                    @if (canEditDelete)
+                                    {
+                                        <td><a class="btn btn-warning @(book.IsSent ? "disabled" : "")" asp-action="Edit" asp-route-id="@book.Id">Edit</a></td>
+                                        <td>
+                                            <form method="post">
+                                                <button type="submit"
+                                                class="btn btn-danger @(book.IsSent ? "disabled" : "")"
+                                                asp-action="Delete" asp-route-id="@book.Id"
+                                                asp-route-from="@book.From" asp-route-ISBN="@book.ISBN">
+                                                    Delete
+                                                </button>
+                                            </form>
+                                        </td>
+                                    }
+                                    else
+                                    {
+                                        <td colspan="2" class="deleted-store">Cannot edit or delete</td>
+                                    }
+                                </tr>
+                            }
+                        }
+                    </table>
+                }    
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+
+

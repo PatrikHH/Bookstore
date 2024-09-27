@@ -1,0 +1,27 @@
+﻿@using Bookstore.DTO
+@model BookInWarehouseDTO
+@{
+    ViewData["Title"] = "Send book to the store";
+}
+<div>
+    <h4>Send book to the store</h4>
+    <a asp-action="Index" class="btn btn-secondary">Back</a>
+    <form asp-action="SendBookToStoreA">
+        <div class="form-group">
+            <h4><label asp-for="Name">@Model.Name</label></h4>
+            <label asp-for="Quantity">Select quantity (max @Model.Quantity)</label>
+            <input type="number" min="1" max="@Model.Quantity" asp-for="SelectQuantity" class="form-control" />
+            <div>
+                @{
+                    var allStores = ViewData["AllStores"] as List<StoreManagement>;
+                    if (allStores != null)
+                        foreach(var store in allStores)
+                        {
+                            <input class="btn btn-success" type="submit" formmethod="post" value="Send to @store.Name" asp-action="SendBookToStore" asp-route-id="@Model.Id"
+                            asp-route-name="@Model.Name" asp-route-author=" @Model.Author" asp-route-ISBN="@Model.ISBN" asp-route-quantity="@Model.Quantity" asp-route-store="@store.Name" />
+                        }
+                }
+            </div>
+        </div>
+    </form>
+</div>

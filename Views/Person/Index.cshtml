@@ -1,0 +1,21 @@
+﻿@using Bookstore.DTO
+@model IEnumerable<PersonDTO>
+<h1>List of all persons</h1>
+@foreach (var person in Model) {
+<div class="border border-1 border-dark p-2 ">
+    <h5>@person.FirstName @person.LastName</h5>
+    <p>Id: @person.Id</p>
+    <p>Phone: @person.Phone</p>
+    <p>Email: @person.Email</p>
+    <p>Username: @person.UserName</p>
+    <a class="btn btn-warning" asp-action="Edit" asp-route-id="@person.Id">Edit</a>
+    <form method="post">
+        <button type="submit" class="btn btn-danger" asp-action="Delete" asp-route-id="@person.Id">Delete</button>
+    </form>
+</div>
+}
+<hr />
+<div>
+    <a class="btn btn-success" asp-action="Create">Create</a>
+</div>
+

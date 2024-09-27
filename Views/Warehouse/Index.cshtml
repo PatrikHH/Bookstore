@@ -1,0 +1,33 @@
+﻿@using Bookstore.DTO
+@model IEnumerable<BookInWarehouseDTO>
+@{
+    ViewData["Title"] = "Warehouse";
+}
+<h1>List of all books in warehouse</h1>
+<a class="btn btn-success" asp-action="Create">Add book</a>
+<a class="btn btn-success" asp-action="BooksToStore">Books on the way</a>
+<hr/>
+<table class="table table-sm table-bordered">
+    <tr>
+        <th>Name</th>
+        <th>Author</th>
+        <th>ISBN</th>
+        <th>Quantity</th>
+        <th>Send to store</th>
+        <th>Edit</th>
+        <th>Delete</th>
+    </tr>
+    @foreach (var book in Model)
+    {
+        <tr>
+            <td>@book.Name</td>
+            <td>@book.Author</td>
+            <td>@book.ISBN</td>
+            <td>@book.Quantity</td>
+            <td><a class="btn btn-success" asp-action="SendBookToStore" asp-route-id="@book.Id">Send to store</a></td>
+            <td><a class="btn btn-warning" asp-action="Edit" asp-route-id="@book.Id">Edit</a></td>
+            <td><form method="post"><button type="submit" class="btn btn-danger" asp-action="Delete" asp-route-id="@book.Id">Delete</button></form></td>
+        </tr>
+    }
+</table>
+

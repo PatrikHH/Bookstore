@@ -1,0 +1,181 @@
+﻿@using Bookstore.DTO
+@model StoreManagementDTO
+@{
+    ViewData["Title"] = "Create store";
+}
+<div>
+    <h4>Add new store</h4>
+    <a asp-action="Index" class="btn btn-secondary">Back</a>
+    <form asp-action="Create">
+        <div class="form-group">
+            <label asp-for="Name">Name</label>
+            <input asp-for="Name" class="form-control" placeholder="min 2 characters" />
+            <div class="error-message">
+                <span id="NameError" class="display-error text-danger"></span>
+            </div>
+            <label asp-for="Street">Street</label>
+            <input asp-for="Street" class="form-control" placeholder="min 2 characters" />
+            <div class="error-message">
+                <span id="StreetError" class="display-error text-danger"></span>
+            </div>
+            <label asp-for="City">City</label>   
+            <input asp-for="City" class="form-control" placeholder="min 2 characters" />
+            <div class="error-message">
+                <span id="CityError" class="display-error text-danger"></span>
+            </div>
+            <label asp-for="Email">Email</label>  
+            <input asp-for="Email" class="form-control" />
+            <div class="error-message">
+                <span id="EmailError" class="display-error text-danger"></span>
+            </div>
+            <label asp-for="Phone">Phone</label>
+            <input asp-for="Phone" class="form-control" />
+            <div class="error-message">
+                <span id="PhoneError" class="display-error text-danger"></span>
+            </div>
+            <div>
+            <input class="btn btn-success" id="create-shop" type="submit" formmethod="post" value="Create"/>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const createShopButton = document.getElementById("create-shop");
+            var  isCreateButtonClicked = false;
+            const inputs = [
+                {
+                    id: "Name",
+                    errorId: "NameError",
+                    regex: /^[A-Za-z0-9]+(?: [A-Za-z0-9]+)*$/,
+                    errorMessages: {
+                        required: "* The name is required.",
+                        invalid: "* The name is not valid. It must not begin or end with a space and must contain only letters, numbers, and spaces.",
+                        length: "* The name must be between 2 and 50 characters long."
+                    },
+                    minLength: 2,
+                    maxLength: 50,
+                    isValidated: false
+                },
+                {
+                    id: "Street",
+                    errorId: "StreetError",
+                    regex: /^[A-Za-z0-9]+(?: [A-Za-z0-9]+)*$/,
+                    errorMessages: {
+                        required: "* The street is required.",
+                        invalid: "* The street is not valid. It must not begin or end with a space and must contain only letters, numbers, and spaces.",
+                        length: "* The street must be between 2 and 50 characters long."
+                    },
+                    minLength: 2,
+                    maxLength: 50,
+                    isValidated: false
+                },
+                {
+                    id: "City",
+                    errorId: "CityError",
+                    regex: /^[A-Za-z]+(?: [A-Za-z]+)*$/,
+                    errorMessages: {
+                        required: "* The city is required.",
+                        invalid: "* The city is not valid. It must not begin or end with a space and must contain only letters and spaces.",
+                        length: "* The city must be between 2 and 50 characters long."
+                    },
+                    minLength: 2,
+                    maxLength: 50,
+                    isValidated: false
+                },
+                {
+                    id: "Email",
+                    errorId: "EmailError",
+                    regex: /^[a-zA-Z0-9_.-]+@@([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,3}$/,
+                    errorMessages: {
+                        required: "* The email is required.",
+                        invalid: "* The email is not valid."
+                    },
+                    isValidated: false
+                },
+                {
+                    id: "Phone",
+                    errorId: "PhoneError",
+                    regex: /^(\+?[0-9]{1,3})? ?([0-9]{3} ?[0-9]{3} ?[0-9]{3})$/,
+                    errorMessages: {
+                        required: "* The phone is required.",
+                        invalid: "* Phone is not valid. Only phone number (9 digits) or country calling code and phone number are allowed."
+                    },
+                    isValidated: false
+                }
+            ];
+
+            const validateInput = (inputConfig) => {
+                const inputElement = document.getElementById(inputConfig.id);
+                const errorElement = document.getElementById(inputConfig.errorId);
+                const value = inputElement.value;
+
+                const setInvalidClass = (isValid) => {
+                    if (!isValid) {
+                        inputElement.classList.add("is-invalid");
+                    } else {
+                        inputElement.classList.remove("is-invalid");
+                    }
+                };
+
+                if (value.length === 0) {
+                    inputConfig.isValidated = false;
+                    if (isCreateButtonClicked) {
+                        errorElement.innerHTML = inputConfig.errorMessages.required;
+                        setInvalidClass(false);
+                    }
+                } else if (!inputConfig.regex.test(value)) {
+                    inputConfig.isValidated = false;
+                    if (isCreateButtonClicked) {
+                        errorElement.innerHTML = inputConfig.errorMessages.invalid;
+                        setInvalidClass(false);
+                    }
+                } else if (inputConfig.minLength && value.length < inputConfig.minLength || inputConfig.maxLength && value.length > inputConfig.maxLength) {
+                    inputConfig.isValidated = false;
+                    if (isCreateButtonClicked) {
+                        errorElement.innerHTML = inputConfig.errorMessages.length;
+                        setInvalidClass(false);
+                    }
+                } else {
+                    inputConfig.isValidated = true;
+                    errorElement.innerHTML = "";
+                    setInvalidClass(true);
+                }
+
+                var allValid = inputs.every(input => input.isValidated);
+
+                 if (createShopButton.disabled && allValid)
+                    createShopButton.disabled = false;
+                else if (!createShopButton.disabled && isCreateButtonClicked && !allValid)
+                    createShopButton.disabled = true;
+            };
+
+            inputs.forEach(input => {
+                const inputElement = document.getElementById(input.id);
+                inputElement.addEventListener("keyup", () => validateInput(input));
+            });
+
+             createShopButton.addEventListener("click", (e) => {
+                 const allValid = inputs.every(input => input.isValidated);
+                 isCreateButtonClicked = true;
+                 
+                 if (!allValid)
+                 {
+                     e.preventDefault();
+                     createShopButton.disabled = true;
+                     inputs.forEach(validateInput);
+                 }
+             });
+        });
+     </script>
+}
+
+
+ @* @section scripts { *@
+@*<script src="https:cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.js"></script>*@
+@*<script src="https:cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.js"></script>*@
+@*<script src="https:cdnjs.cloudflare.com/ajax/libs/jquery-ajax-unobtrusive/3.2.6/jquery.unobtrusive-ajax.js"></script>*@
+ @* }  *@
+@* <span asp-validation-for="Name" id="NameError" class="text-danger"></span>*@

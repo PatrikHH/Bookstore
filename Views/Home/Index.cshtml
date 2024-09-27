@@ -1,0 +1,33 @@
+﻿@model string
+@{
+    ViewData["Title"] = "Authentication";
+}
+<h1 class="text-black">Index</h1>
+<div id="Greeting">@Model</div>
+@if (User?.Identity?.IsAuthenticated ?? false)
+{
+    <a asp-controller="Account" asp-action="Logout" class="btn btn-danger">Logout</a>
+}
+<p />
+<p>
+    It is an information system for bookstore and warehouse management. Stores can be generated and managed.
+    Books can be sent between the warehouse and the store. When the books are sent, they are sent to the intermediate "books on the way" stage,
+    which is supposed to simulate the real transport of books between the warehouse and the store.
+    The information system also allows the generation and management of users and assigning them work roles.
+    <div style="color: red;">
+        <strong>The information system is not finished, styling does not exist, UX design is disappointing and code optimization... the code optimization...nasty. <br /></strong>
+        <p />
+        <p>
+        <strong>The last update was 27.1. 2025.</strong>
+    </div>
+<p />
+<p />
+    For login information check the "Login info" tab.
+<p />
+<ul>
+    TODO:
+    <li>creation of event log (user creation, book creation/sending to/from store, book sale,...)</li>
+    <li>creation of a simple e-shop (react/php) with customer creation and shopping cart</li>
+    <li>removing bugs and adding minor improvements</li>
+    <li>styling (CSS)</li>
+</ul>
