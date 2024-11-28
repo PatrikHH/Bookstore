@@ -1,0 +1,44 @@
+﻿@using Bookstore.DTO
+@model StoreManagementDTO
+@{
+    ViewData["Title"] = "Create store";
+}
+<div>
+    <h4>Add new store</h4>
+    <a asp-action="Index" class="btn btn-secondary">Back</a>
+    
+    <!--data-ajax="true"
+    data-ajax-url="@Url.Action("Create", "StoreManagement")"
+    data-ajax-method="POST"
+    data-ajax-confirm="success">-->
+    <!--asp-antiforgery="true">-->
+    <form asp-action="Create">
+        <div class="form-group">
+            <label asp-for="Name">Name</label>
+            <input asp-for="Name" class="form-control" placeholder="min 2 characters" />
+            <label asp-for="Street">Street</label>
+            <input asp-for="Street" class="form-control" />
+            <label asp-for="City">City</label>
+            <input asp-for="City" class="form-control" />
+            <label asp-for="Email">Email</label>
+            <input asp-for="Email" class="form-control" />
+            <label asp-for="Phone">Phone</label>
+            <input asp-for="Phone" class="form-control" />
+        </div>
+        <div class="form-group clientside-validation-summary">
+            <span asp-validation-for="Name" class="text-danger"></span>
+            <span asp-validation-for="Street" class="text-danger"></span>
+            <span asp-validation-for="City" class="text-danger"></span>
+            <span asp-validation-for="Email" class="text-danger"></span>
+            <span asp-validation-for="Phone" class="text-danger"></span> 
+        </div>
+            <div>
+            <input class="btn btn-success" type="submit" formmethod="post" value="Create"/>
+            </div>
+    </form>
+</div>
+@section scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ajax-unobtrusive/3.2.6/jquery.unobtrusive-ajax.js"></script>
+}

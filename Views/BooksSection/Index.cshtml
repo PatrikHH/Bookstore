@@ -1,0 +1,23 @@
+﻿@using Bookstore.DTO
+@model IEnumerable<BooksSectionDTO>
+@{
+    ViewData["Title"] = "Books section";
+}
+<h1>List of all books sections</h1>
+<a class="btn btn-success" asp-action="Create">Create</a>
+<hr />
+<table class="table table-sm table-bordered">
+    <tr>
+        <th>Section</th>
+        <th>Edit</th>
+        <th>Delete</th>
+    </tr>
+    @foreach (var shelf in Model)
+    {
+        <tr>
+            <td>@shelf.Section</td>
+            <td><a class="btn btn-warning" asp-action="Edit" asp-route-id="@shelf.Id">Edit</a></td>
+            <td><form method="post"><button type="submit" class="btn btn-danger" asp-action="Delete" asp-route-id="@shelf.Id">Delete</button></form></td>
+        </tr>
+    }
+</table>

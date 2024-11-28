@@ -1,0 +1,21 @@
+﻿@using Bookstore.DTO
+@model PersonDTO
+<div>
+    <h4>Create new person</h4>
+    <form asp-action="Create">
+        <div class="form-group">
+            <label asp-for="FirstName">First name</label>
+            <input type="text" asp-for="FirstName" class="form-control" />
+            <label asp-for="LastName">Last name</label>
+            <input type="text" asp-for="LastName" class="form-control" />
+            <label asp-for="UserName">User name</label>
+            <input type="text" asp-for="UserName" class="form-control" />
+            <label asp-for="Phone">Phone</label>
+            <input type="text" asp-for="Phone" class="form-control" />
+            <label asp-for="Email">Email</label>
+            <input type="text" asp-for="Email" class="form-control" />
+        <div>
+                <input class="btn btn-success" type="submit" formmethod="post" value="Create" />
+        </div>
+    </form>
+</div>

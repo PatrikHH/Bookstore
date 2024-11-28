@@ -1,0 +1,28 @@
+﻿@using Bookstore.DTO
+@model BookInStoreDTO
+@{
+    ViewData["Title"] = "Add book section and price";
+}
+<div>
+    @{string store = ViewData["Store"] as string;}
+    <h4>Edit placement and price of the book</h4>
+    <a asp-action="Index" asp-route-store="@store" class="btn btn-secondary">Back</a>
+    <form asp-action="AddBookSectionAndPrice">
+        <div class="form-group">
+            <h5>Name: @Model.Name</h5>
+            <h5>ISBN: @Model.ISBN</h5>
+            <label asp-for="BooksSectionId" class="control-label">Books Section</label>
+            <select asp-for="BooksSectionId" asp-items="ViewBag.BooksSections" class="form-control"></select>
+            <label asp-for="Price">Price</label>
+            <input type="number" min= "0" asp-for="Price" class="form-control" />
+            <div>
+                <input class="btn btn-success" type="submit" formmethod="post" value="Update"
+                       asp-route-name="@Model.Name"
+                       asp-route-author=" @Model.Author"
+                       asp-route-ISBN="@Model.ISBN"
+                       asp-route-quantity="@Model.Quantity"
+                       asp-route-storePlacement="@Model.StorePlacement" />
+            </div>
+        </div>
+    </form>
+</div>

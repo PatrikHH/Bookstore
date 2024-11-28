@@ -1,0 +1,37 @@
+﻿@using Bookstore.ViewModels
+@model LoginViewModel
+@{
+    ViewData["Title"] = "Login";
+}
+<h1>Login</h1>
+<div class="text-danger" asp-validation-summary="All"></div>
+<form asp-action="Login" method="post">
+    <input type="hidden" asp-for="ReturnUrl" />
+    <div class="form-group">
+        <label asp-for="Username"></label>
+        <input asp-for="Username" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Password"></label>
+        <input asp-for="Password" class="form-control" /> 
+        Remember me? <input type="checkbox" asp-for="Remember" />
+    </div>
+    <button class="btn btn-primary" type="submit">Log me in, bro</button>
+    <p/>
+    <p>
+    This is an information system for shopping management. It contains a warehouse
+    and shops between which books can be sent. Stores can be dynamically created.
+    It contains the management of books and created stores. It also allows the creation
+    of a user and his login in a specific assigned role.
+        <div style="color: red;"><strong>The information system is not finished, the last update was 21.11.2024.</div></strong>
+    <p /><p />
+    For login information check the "Login info" tab.<p />
+        <ul>TODO:
+        <li>creation of event log (user creation, book creation/sending to/from store, book sale,...)</li>
+        <li>creation of a simple e-shop (react/php) with customer creation and shopping cart</li>
+        <li>removing bugs and adding minor improvements</li>
+        <li>Styling (CSS)</li>
+        </ul>
+    </p>
+ 
+</form>

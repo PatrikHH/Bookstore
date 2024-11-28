@@ -1,0 +1,112 @@
+﻿@using Bookstore.DTO
+@model IEnumerable<BookOnTheWayDTO>
+@{
+    ViewData["Title"] = "Book on the way";
+}
+@{
+    if (Model == null || !Model.Any())
+    {
+        <h1 class="no-something">There are no books on the way</h1>
+    }
+    else
+    {      
+        var allStores = ViewData["AllStores"] as List<StoreManagement>;
+        List<string> destinationFrom = new List<string>();
+        List<string> destinationTo = new List<string>();
+        string action, sendTo;
+
+        destinationFrom.Add("Warehouse");
+        if (allStores != null)            
+            foreach (var store in allStores)
+            {
+                destinationFrom.Add(store.Name);
+                destinationTo.Add(store.Name);
+            }        
+        <h1>List of all books on the way</h1>
+        foreach(string from in destinationFrom)
+            foreach(string to in destinationTo)
+            {
+                if (to.Equals("Warehouse"))
+                {
+                    action = "AddBooksToWarehouse";
+                    sendTo = "warehouse";
+                }
+                else
+                {
+                    action = "AddBooksToStore";
+                    sendTo = to;
+                }
+                if (Convert.ToBoolean((Model.Where(x => x.From == from).Where(x => x.To == to).Select(x => x.ISBN)).FirstOrDefault()))
+                {
+                    var allBooks = Model.Where(x => x.From == from).Where(x => x.To == to).Select(x => x);
+                    int maxContainerId = allBooks.Select(x => x.ContainerId).Max();
+                    var data = new Dictionary<string, string>
+                        {
+                            {"from", from},
+                            {"to", to}
+                        };
+
+                    for (int id = 1; id <= maxContainerId; id++)
+                    {
+                        if (allBooks.Where(x => x.ContainerId == id).Select(x => x.ContainerId).FirstOrDefault() == id)
+                        {
+                            <br/>
+                            if (from.Equals("Warehouse"))
+                            {
+                                <h3> Books from warehouse to store @to, ID @id</h3>
+                            }
+                            else
+                            {
+                                <h3> Books from store @from to warehouse, ID @id</h3>
+                            }
+                            <a class="btn btn-success" asp-all-route-data="data" asp-action="LockBooks" >Send books on the road</a>
+                            <a class="btn btn-success" asp-all-route-data="data" asp-route-id="@id" asp-action=@action>Add books to the @sendTo </a>
+                            <table class="table table-sm table-bordered">
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Author</th>
+                                    <th>ISBN</th>
+                                    <th>Quantity</th>
+                                    <th>From</th>
+                                    <th>To</th>
+                                    <th>Edit</th>
+                                    <th>Delete</th>
+                                </tr>
+                                @foreach (var book in allBooks)
+                                {
+                                    if (book.ContainerId == id)
+                                    {
+                                        <tr>
+                                            <td>@book.Name</td>
+                                            <td>@book.Author</td>
+                                            <td>@book.ISBN</td>
+                                            <td>@book.Quantity</td>
+                                            <td>@book.From</td>
+                                            <td>@book.To</td>
+                                            <td><a class="btn btn-warning" asp-action="Edit" asp-route-id="@book.Id">Edit</a></td>
+                                            <td><form method="post"><button type="submit" class="btn btn-danger" asp-action="Delete"
+                                                asp-route-from="@book.From" asp-route-ISBN="@book.ISBN" asp-route-id="@book.Id">Delete</button></form></td>
+                                        </tr>
+                                    }
+                                }
+                            </table>
+                        } 
+                    }
+                }
+                if (to.Equals(destinationTo[destinationTo.Count() - 1]))
+                {
+                    destinationTo = default;
+                    destinationTo = new List<string>() { "Warehouse" };
+                }
+            }
+    }
+}
+
+
+
+
+
+
+
+
+

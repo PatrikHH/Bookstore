@@ -1,0 +1,28 @@
+﻿@using Bookstore.DTO
+@model StoreManagementDTO
+@{
+    ViewData["Title"] = "Edit store";
+}
+<div>
+    <h4>Update store</h4>
+    <a asp-action="Index" class="btn btn-secondary">Back</a>
+    <form asp-action="Edit">
+        <div class="form-group">
+            <label asp-for="Name">Name</label>
+            <input asp-for="Name" class="form-control"/>
+            <label asp-for="Street">Street</label>
+            <input asp-for="Street" class="form-control" />
+            <label asp-for="City">City</label>
+            <input asp-for="City" class="form-control" />
+            <label asp-for="Email">Email</label>
+            <input asp-for="Email" class="form-control" />
+            <label asp-for="Phone">Phone</label>
+            <input asp-for="Phone" class="form-control" />
+            <input type="hidden" asp-for="Name" name="originalName" value="@Model.Name" />
+            <div>
+                <input class="btn btn-success" type="submit" formmethod="post" value="Update" />
+            </div>
+        </div>
+    </form>
+</div>
+

@@ -1,0 +1,40 @@
+﻿@using Bookstore.DTO
+@model BookOnTheWayDTO
+@{
+    ViewData["Title"] = "Edit quantity";
+}
+
+<h4>Update quantity of the book</h4>
+@{
+    var data = new Dictionary<string, string>
+        {
+            {"id", Model.Id.ToString()},
+            {"ISBN", Model.ISBN.ToString()},
+            {"from", Model.From}
+        };
+    <a asp-action="Index" class="btn btn-secondary">Back</a>
+    <form asp-action="Edit">
+        <table class="table table-sm table-bordered">
+            <tr>
+                <th>Name</th>
+                <th>Author</th>
+                <th>ISBN</th>
+                <th>From</th>
+                <th>To</th>
+                <th>Quantity</th>
+            </tr>
+            <tr>
+                <td>@Model.Name</td>
+                <td>@Model.Author</td>
+                <td>@Model.ISBN</td>
+                <td>@Model.From</td>
+                <td>@Model.To</td>
+                <td><input type="number" min="0" asp-all-route-data="way" asp-for="Quantity" class="form-control" required /></td>
+            </tr>
+        </table>
+        <div>
+            <input class="btn btn-success" type="submit" asp-all-route-data="data" formmethod="post" value="Update" />
+        </div>
+    </form>
+}
+
