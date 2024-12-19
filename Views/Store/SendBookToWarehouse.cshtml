@@ -12,7 +12,7 @@
             <label asp-for="Quantity">Select quantity (max @Model.Quantity)</label>
             <input type="number" min="1" max="@Model.Quantity" asp-for="SelectQuantity" class="form-control" />
             <div>
-                <input class="btn btn-success" type="submit" formmethod="post" value="Send to Store" asp-action="SendBookToWarehouse"
+                <input class="btn btn-success" type="submit" formmethod="post" value="Send to Warehouse" asp-action="SendBookToWarehouse"
                  asp-route-name="@Model.Name"
                  asp-route-author="@Model.Author"
                  asp-route-ISBN="@Model.ISBN"

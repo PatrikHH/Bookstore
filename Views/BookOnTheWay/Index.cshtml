@@ -1,7 +1,7 @@
 ﻿@using Bookstore.DTO
 @model IEnumerable<BookOnTheWayDTO>
 @{
-    ViewData["Title"] = "Book on the way";
+    ViewData["Title"] = "Books on the way";
 }
 @{
     if (Model == null || !Model.Any())
@@ -11,94 +11,83 @@
     else
     {      
         var allStores = ViewData["AllStores"] as List<StoreManagement>;
-        List<string> destinationFrom = new List<string>();
-        List<string> destinationTo = new List<string>();
-        string action, sendTo;
+        var groupedBooks = Model
+            .GroupBy(book => new { book.From, book.To, book.ContainerId })
+            .ToDictionary(group => group.Key, group => group.ToList());
 
-        destinationFrom.Add("Warehouse");
-        if (allStores != null)            
-            foreach (var store in allStores)
-            {
-                destinationFrom.Add(store.Name);
-                destinationTo.Add(store.Name);
-            }        
-        <h1>List of all books on the way</h1>
-        foreach(string from in destinationFrom)
-            foreach(string to in destinationTo)
-            {
-                if (to.Equals("Warehouse"))
-                {
-                    action = "AddBooksToWarehouse";
-                    sendTo = "warehouse";
-                }
-                else
-                {
-                    action = "AddBooksToStore";
-                    sendTo = to;
-                }
-                if (Convert.ToBoolean((Model.Where(x => x.From == from).Where(x => x.To == to).Select(x => x.ISBN)).FirstOrDefault()))
-                {
-                    var allBooks = Model.Where(x => x.From == from).Where(x => x.To == to).Select(x => x);
-                    int maxContainerId = allBooks.Select(x => x.ContainerId).Max();
-                    var data = new Dictionary<string, string>
-                        {
-                            {"from", from},
-                            {"to", to}
-                        };
+        var booksKeysWithMaxID = Model
+            .GroupBy(book => new { book.From, book.To })
+            .ToDictionary(group => group.Key, group => group.Max(book => book.ContainerId));
 
-                    for (int id = 1; id <= maxContainerId; id++)
-                    {
-                        if (allBooks.Where(x => x.ContainerId == id).Select(x => x.ContainerId).FirstOrDefault() == id)
+        <h1 class="h1-head">List of all books on the way</h1>
+
+        foreach(var booksKey in booksKeysWithMaxID)
+        {
+            for (int i = 1; i <= booksKey.Value; i++)
+            {
+                var key = new { From = booksKey.Key.From, To = booksKey.Key.To, ContainerId = i };
+                if (groupedBooks.ContainsKey(key))
+                {
+                    var books = groupedBooks[key];
+                    <h4>
+                        Books from @booksKey.Key.From
+                        @if (!allStores.Any(x => x.Name == booksKey.Key.From || x.Name == booksKey.Key.To))
                         {
-                            <br/>
-                            if (from.Equals("Warehouse"))
+                            <span class="deleted-store">(deleted store)</span>
+                        }
+                        to @booksKey.Key.To
+                        (Container ID: @i)
+                    </h4>
+                    <a class="btn btn-success" asp-action="LockBooks" asp-route-ContainerId="@i">Send books on the road</a>
+                    <a class="btn btn-success" asp-action="@((booksKey.Key.To == "Warehouse") ? "AddBooksToWarehouse" : "AddBooksToStore")"
+                    asp-route-from="@booksKey.Key.From" asp-route-to="@booksKey.Key.To" asp-route-id="@i">Add books to @((booksKey.Key.To == "Warehouse") ? "warehouse" : booksKey.Key.To)</a>
+
+                    <table class="table table-sm table-bordered">
+                        <tr>
+                            <th>Name</th>
+                            <th>Author</th>
+                            <th>ISBN</th>
+                            <th>Quantity</th>
+                            <th>From</th>
+                            <th>To</th>
+                            <th>Edit</th>
+                            <th>Delete</th>
+                        </tr>
+                        @{
+                            bool canEditDelete = allStores.Any(x => x.Name == booksKey.Key.From || x.Name == booksKey.Key.To);
+                            foreach (var book in books)
                             {
-                                <h3> Books from warehouse to store @to, ID @id</h3>
-                            }
-                            else
-                            {
-                                <h3> Books from store @from to warehouse, ID @id</h3>
-                            }
-                            <a class="btn btn-success" asp-all-route-data="data" asp-action="LockBooks" >Send books on the road</a>
-                            <a class="btn btn-success" asp-all-route-data="data" asp-route-id="@id" asp-action=@action>Add books to the @sendTo </a>
-                            <table class="table table-sm table-bordered">
                                 <tr>
-                                    <th>Name</th>
-                                    <th>Author</th>
-                                    <th>ISBN</th>
-                                    <th>Quantity</th>
-                                    <th>From</th>
-                                    <th>To</th>
-                                    <th>Edit</th>
-                                    <th>Delete</th>
-                                </tr>
-                                @foreach (var book in allBooks)
-                                {
-                                    if (book.ContainerId == id)
+                                    <td>@book.Name</td>
+                                    <td>@book.Author</td>
+                                    <td>@book.ISBN</td>
+                                    <td>@book.Quantity</td>
+                                    <td>@book.From</td>
+                                    <td>@book.To</td>
+                                    @if (canEditDelete)
                                     {
-                                        <tr>
-                                            <td>@book.Name</td>
-                                            <td>@book.Author</td>
-                                            <td>@book.ISBN</td>
-                                            <td>@book.Quantity</td>
-                                            <td>@book.From</td>
-                                            <td>@book.To</td>
-                                            <td><a class="btn btn-warning" asp-action="Edit" asp-route-id="@book.Id">Edit</a></td>
-                                            <td><form method="post"><button type="submit" class="btn btn-danger" asp-action="Delete"
-                                                asp-route-from="@book.From" asp-route-ISBN="@book.ISBN" asp-route-id="@book.Id">Delete</button></form></td>
-                                        </tr>
+                                        <td><a class="btn btn-warning" asp-action="Edit" asp-route-id="@book.Id">Edit</a></td>
+                                        <td>
+                                            <form method="post">
+                                                <button type="submit" class="btn btn-danger"
+                                                asp-action="Delete" asp-route-id="@book.Id"
+                                                asp-route-from="@book.From" asp-route-ISBN="@book.ISBN">
+                                                    Delete
+                                                </button>
+                                            </form>
+                                        </td>
                                     }
-                                }
-                            </table>
-                        } 
-                    }
-                }
-                if (to.Equals(destinationTo[destinationTo.Count() - 1]))
-                {
-                    destinationTo = default;
-                    destinationTo = new List<string>() { "Warehouse" };
-                }
+                                    else
+                                    {
+                                        <td colspan="2" class="deleted-store">Cannot edit or delete</td>
+                                    }
+                                </tr>
+                            }
+                        }
+                    </table>
+                }    
             }
+        }
     }
 }
 
