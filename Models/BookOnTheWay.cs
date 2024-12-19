@@ -1,4 +1,6 @@
-﻿namespace Bookstore.Models
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Bookstore.Models
 {
     public class BookOnTheWay
     {

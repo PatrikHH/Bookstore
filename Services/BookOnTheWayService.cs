@@ -40,7 +40,7 @@ namespace Bookstore.Services
             }
             else
             { 
-                var book = await _dbContext.BooksInStore.FirstOrDefaultAsync(x => x.ISBN == ISBN);
+                var book = await _dbContext.BooksInStore.FirstOrDefaultAsync(x => x.ISBN == ISBN && x.StorePlacement == from);
                 if (book == default)
                     return null;
                 else
@@ -159,13 +159,13 @@ namespace Bookstore.Services
             await _dbContext.BooksOnTheWay.AddAsync(DTOToModel(sendBookOnItsWay));
             await _dbContext.SaveChangesAsync();
         }
-        internal async Task LockBooksAsync(string to, string from)
+        internal async Task LockBooksAsync(int containerID)
         {
             var allBooksOnTheWayDTO = await GetAllAsync();
-            var maxContainerId = allBooksOnTheWayDTO.Where(x => x.To == to).Where(x => x.From == from).Select(x => x.ContainerId).Max();
+            var maxContainerId = allBooksOnTheWayDTO.Select(x => x.ContainerId).Max();
 
             foreach (var bookOnTheWayDTO in allBooksOnTheWayDTO)
-                if (!bookOnTheWayDTO.IsSent && bookOnTheWayDTO.To == to && bookOnTheWayDTO.From == from)
+                if (!bookOnTheWayDTO.IsSent && bookOnTheWayDTO.ContainerId == containerID)
                 {
                     bookOnTheWayDTO.ContainerId = maxContainerId + 1;
                     bookOnTheWayDTO.IsSent = true;

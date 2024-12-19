@@ -29,6 +29,19 @@ namespace Bookstore.Services
                 allBooksDTO.Add(ModelToDTO(book));
             return allBooksDTO;
         }
+        public async Task<IEnumerable<BookInWarehouseDTO>> GetAllBooksInWarehouseAsync()
+        {
+            var allBooks = await _dbContext.BooksInWarehouse.ToListAsync();
+            var allBooksDTO = new List<BookInWarehouseDTO>();
+            foreach (var book in allBooks)
+                allBooksDTO.Add(ModelToDTO(book));
+            return allBooksDTO;
+        }
+        public async Task<BookInStoreDTO> GetByIdAsync(int id)
+        {
+            var book = await _dbContext.BooksInStore.FirstOrDefaultAsync(x => x.Id == id);
+            return ModelToDTO(book);
+        }
         internal async Task AddBooksFromTheWayToStoreAsync(string from, string to, int containerId)
         {
             var allBooksInStore = await GetAllBooksInStoreAsync(to);
@@ -70,10 +83,10 @@ namespace Bookstore.Services
             _dbContext.BooksOnTheWay.Remove(DTOToModel(bookOnTheWayDTO));
             await _dbContext.SaveChangesAsync();
         }
-        public async Task<BookInStoreDTO> GetByIdAsync(int id)
+        internal async Task RequestBooks(List<BookRequestDataDTO> books, string name)
         {
-            var book = await _dbContext.BooksInStore.FirstOrDefaultAsync(x => x.Id == id);
-            return ModelToDTO(book);
+            int maxId = 
+            await _dbContext.SaveChangesAsync();
         }
         internal async Task EditBookInStoreQuantity(BookInStoreDTO sendBook)
         {
@@ -83,11 +96,6 @@ namespace Bookstore.Services
             else
                 await EditAsync(sendBook);
         }
-        //internal async Task CreateAsync(BookInStoreDTO newBook)
-        //{
-        //    await _dbContext.BooksInStore.AddAsync(DTOToModel(newBook));
-        //    await _dbContext.SaveChangesAsync();
-        //}
         internal async Task EditAsync(BookInStoreDTO editBook)
         {
             _dbContext.Update(DTOToModel(editBook));
@@ -186,6 +194,17 @@ namespace Bookstore.Services
                 ISBN = book.ISBN,
                 Quantity = book.Quantity,
                 StorePlacement = to
+            };
+        }
+        private static BookInWarehouseDTO ModelToDTO(BookInWarehouse book)
+        {
+            return new BookInWarehouseDTO()
+            {
+                Id = book.Id,
+                Name = book.Name,
+                Author = book.Author,
+                ISBN = book.ISBN,
+                Quantity = book.Quantity,
             };
         }
     }

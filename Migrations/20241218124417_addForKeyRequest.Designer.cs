@@ -4,6 +4,7 @@ using Bookstore.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bookstore.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241218124417_addForKeyRequest")]
+    partial class addForKeyRequest
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -198,6 +201,13 @@ namespace Bookstore.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("BookRequestHeadId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("From")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("ISBN")
                         .HasColumnType("int");
 
@@ -205,15 +215,12 @@ namespace Bookstore.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("OrderId")
-                        .HasColumnType("int");
-
                     b.Property<int>("RequestedQuantity")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OrderId");
+                    b.HasIndex("BookRequestHeadId");
 
                     b.ToTable("BooksRequestData");
                 });
@@ -470,7 +477,7 @@ namespace Bookstore.Migrations
                 {
                     b.HasOne("Bookstore.Models.BookRequestHead", "BookRequestHead")
                         .WithMany("BookRequestData")
-                        .HasForeignKey("OrderId")
+                        .HasForeignKey("BookRequestHeadId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

@@ -37,7 +37,7 @@
                             });
                     },
                     error: function () {
-                        Swal.fire('Error!', 'Some eroror.', 'error');
+                        Swal.fire('Error!', 'Some errr.', 'error');
                     }
                 });
             }

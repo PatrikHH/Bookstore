@@ -42,10 +42,10 @@ namespace Bookstore.Controllers
             await _booksOnTheWayService.EditAsync(from, ISBN, 0, id);
             return RedirectToAction("Index");
         }
-        public async Task<IActionResult> LockBooks(string from, string to)
+        public async Task<IActionResult> LockBooks(int containerID)
         {
 
-            await _booksOnTheWayService.LockBooksAsync(to, from);
+            await _booksOnTheWayService.LockBooksAsync(containerID);
             return RedirectToAction("Index");
         }       
         public async Task<IActionResult> SendBookOnTheWay(BookInWarehouseDTO sendBookDTO)

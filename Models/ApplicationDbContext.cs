@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Bookstore.Services;
 
 namespace Bookstore.Models
 {
@@ -15,5 +14,17 @@ namespace Bookstore.Models
         public DbSet<BookInStore> BooksInStore { get; set; }
         public DbSet<BookOnTheWay> BooksOnTheWay { get; set; }     
         public DbSet<StoreManagement> StoresManagement { get; set; }
+        public DbSet<BookRequestHead> BooksRequestHead { get; set; }
+        public DbSet<BookRequestData> BooksRequestData { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<BookRequestData>()
+                .HasOne(x => x.BookRequestHead)
+                .WithMany(x => x.BookRequestData)
+                .HasForeignKey(x => x.OrderId)
+                .OnDelete(DeleteBehavior.Cascade);
+        }
     }
 }

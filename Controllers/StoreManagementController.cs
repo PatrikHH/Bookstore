@@ -39,7 +39,7 @@ namespace Bookstore.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(StoreManagementDTO editStore, string originalName)
         {
-            await _storeManagementService.EditAsync(editStore, originalName);
+            await _storeManagementService.EditStoreNameAsync(editStore, originalName);
             return RedirectToAction("Index");
         }
         [HttpPost]

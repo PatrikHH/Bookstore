@@ -34,8 +34,16 @@ body {
     display: flex;
     flex-flow: column nowrap;
     .field-validation-error > span:before
+    {
+        content: "*";
+        padding-right: .3rem;
+    }
+}
 
-{
-    content: "*";
-    padding-right: .3rem;
+.h1-head {
+    margin-bottom: 30px;
+}
+
+.deleted-store {
+    color:red;
 }

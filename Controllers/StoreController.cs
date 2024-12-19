@@ -1,10 +1,9 @@
 ﻿using Bookstore.DTO;
+using Bookstore.Models;
 using Bookstore.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Collections.Generic;
 
 namespace Bookstore.Controllers
 {
@@ -26,27 +25,16 @@ namespace Bookstore.Controllers
             
             return View(allBooks);
         }
-        //public IActionResult Create()
-        //{
-        //    return View();
-        //}
-        //[HttpPost]
-        //public async Task<IActionResult> Create(BookInStoreDTO newBook)
-        //{
-        //    await _service.CreateAsync(newBook);
-        //    return RedirectToAction("Index");
-        //}
-        //public async Task<IActionResult> Edit(int id)
-        //{
-        //    var bookToEdit = await _service.GetByIdAsync(id);
-        //    if (bookToEdit == null)
-        //        return View("NotFound");
-        //    return View(bookToEdit);
-        //}
-        [HttpPost]
-        public async Task<IActionResult> Edit(BookInStoreDTO editBook)
+        public async Task<IActionResult> RequestBooks()
         {
-            await _storeService.EditAsync(editBook);
+            var allBooksInWarehouse = await _storeService.GetAllBooksInWarehouseAsync();
+            return View(allBooksInWarehouse);
+        }
+        [HttpPost]
+        public async Task<IActionResult> RequestBooks(List<BookRequestDataDTO> books, string name)
+        {
+            if (!books.Any(book => book.RequestedQuantity > 0) && !string.IsNullOrEmpty(name))
+                await _storeService.RequestBooks(books, name);
             return RedirectToAction("Index");
         }
         public async Task<IActionResult> AddBookSectionAndPrice(int id)
@@ -96,6 +84,7 @@ namespace Bookstore.Controllers
                 return View("NotFound");
             return View(sendBook);
         }
+
         [HttpPost]
         public async Task<IActionResult> SendBookToWarehouse(BookInStoreDTO sendBook)
         {
@@ -108,5 +97,6 @@ namespace Bookstore.Controllers
         {
             return RedirectToAction("Index", "BookOnTheWay");
         }
+
     }
 }
