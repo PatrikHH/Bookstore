@@ -70,11 +70,11 @@ namespace Bookstore.Controllers
         }
         public async Task<IActionResult> AddBooksToStore()
         {
-            string from = TempData["From"] as string;
-            string to = TempData["To"] as string;
-            int containerId = (int)TempData["ContainerId"];
+            string? from = TempData["From"] as string;
+            string? to = TempData["To"] as string;
+            int containerId = (int)TempData["ContainerId"]!;
 
-            await _storeService.AddBooksFromTheWayToStoreAsync(from, to, containerId);
+            await _storeService.AddBooksFromTheWayToStoreAsync(from!, to!, containerId);
             return RedirectToAction("Index");
         }
         public async Task<IActionResult> SendBookToWarehouse(int id)
