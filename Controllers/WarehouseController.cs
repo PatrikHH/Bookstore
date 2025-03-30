@@ -53,9 +53,9 @@ namespace Bookstore.Controllers
         }
         public async Task<IActionResult> AddBooksToWarehouse()
         {
-            string from = TempData["From"] as string;
-            string to = TempData["To"] as string;
-            int containerId = (int)TempData["containerId"];
+            string? from = TempData["From"] as string;
+            string? to = TempData["To"] as string;
+            int containerId = (int)TempData["containerId"]!;
             await _warehouseService.AddBooksFromTheWayToWarehouseAsync(from, to, containerId);
             return RedirectToAction("Index");
         }

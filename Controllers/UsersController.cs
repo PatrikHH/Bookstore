@@ -46,9 +46,9 @@ namespace Bookstore.Controllers
             }
             return View(userViewModel);
         }
-        public async Task<IActionResult> Edit(string id) //proc string id
+        public async Task<IActionResult> Edit(string id)
         {
-            AppUser userToEdit = await _userManager.FindByIdAsync(id);
+            AppUser? userToEdit = await _userManager.FindByIdAsync(id);
             if (userToEdit == null)
             {
                 return View("NotFound");
@@ -56,9 +56,9 @@ namespace Bookstore.Controllers
             return View(userToEdit);
         }
         [HttpPost]
-        public async Task<IActionResult> EditAsync(string id, string email, string password)  // proc string id
+        public async Task<IActionResult> EditAsync(string id, string email, string password)
         {
-            AppUser userToEdit = await _userManager.FindByIdAsync(id);
+            AppUser? userToEdit = await _userManager.FindByIdAsync(id);
             if (userToEdit != null)
             {
                 IdentityResult validPass;

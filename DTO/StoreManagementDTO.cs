@@ -26,16 +26,4 @@ namespace Bookstore.DTO
         //[RegularExpression("^(\\+?[0-9]{1,3})? ?([0-9]{3} ?[0-9]{3} ?[0-9]{3})$", ErrorMessage = "Phone is not valid. Only country calling code and phone number (9 digits) are allowed.")]
         public string Phone { get; set; }
     }
-    //[CustomValidation(typeof(MyValidatorClass), "ValidateAge")]
-    //public int Age { get; set; }
-
-    //public class MyValidatorClass
-    //{
-    //    public static ValidationResult ValidateAge(int age, ValidationContext context)
-    //    {
-    //        if (age < 18)
-    //            return new ValidationResult("Age must be 18 or older.");
-    //        return ValidationResult.Success;
-    //    }
-    //}
 }
