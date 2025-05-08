@@ -30,7 +30,7 @@ namespace Bookstore.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(string from, int ISBN, int quantity, int id)
         {
-            await _booksOnTheWayService.EditAsync(from, ISBN, quantity, id);
+            await _booksOnTheWayService.EditBookQuantityAsync(from, ISBN, quantity, id);
             return RedirectToAction("Index");
         }
         public async Task<IActionResult> Delete(string from, int ISBN, int id)
@@ -39,7 +39,7 @@ namespace Bookstore.Controllers
 
             if (bookToDelete == null)
                 return View("NotFound");
-            await _booksOnTheWayService.EditAsync(from, ISBN, 0, id);
+            await _booksOnTheWayService.EditBookQuantityAsync(from, ISBN, 0, id);
             return RedirectToAction("Index");
         }
         public async Task<IActionResult> LockBooks(int containerID)
@@ -50,8 +50,8 @@ namespace Bookstore.Controllers
         }       
         public async Task<IActionResult> SendBookOnTheWay(BookInWarehouseDTO sendBookDTO)
         {
-            string from = TempData["From"] as string;
-            string to = TempData["To"] as string;            
+            string? from = TempData["From"] as string;
+            string? to = TempData["To"] as string;            
 
             await _booksOnTheWayService.SendBookOnTheWayAsync(sendBookDTO, from, to);
             if (from.Equals("Warehouse"))

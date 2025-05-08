@@ -14,8 +14,8 @@ namespace Bookstore
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddDbContext<ApplicationDbContext>(options => {
-                //options.UseSqlServer(builder.Configuration.GetConnectionString("BookstoreDbConnection"));
-                options.UseSqlServer(builder.Configuration.GetConnectionString("MonsterAspDbConnection"));
+                options.UseSqlServer(builder.Configuration.GetConnectionString("BookstoreDbConnection"));
+                //options.UseSqlServer(builder.Configuration.GetConnectionString("MonsterAspDbConnection"));
                 options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);  //poresi s trakovanim pri updatu
             });
             builder.Services.AddScoped<BaseService>();
